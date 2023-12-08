@@ -9,6 +9,7 @@ import plotly.express as px
 import json
 import warnings
 import pynsee
+import os
 
 from pynsee.download import download_file
 
