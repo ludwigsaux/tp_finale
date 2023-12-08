@@ -4,6 +4,7 @@ import geopandas as gpd
 import pandas as pd
 import plotly.express as px
 import json
+import os
 
 url_energie = 'https://opendata.agenceore.fr/explore/dataset/conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-commune/download?format=csv&timezone=Europe/Berlin&use_labels_for_header=false'
 
