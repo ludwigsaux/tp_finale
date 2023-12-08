@@ -55,7 +55,7 @@ def tendances_page():
 def filosofi_page():
     st.write("Contenu de la page Filosofi.")
 
-def visualiser_consommation_departement():
+def visualiser_consommation_departement(df_energie, departements_geo_data):
     # Les données de consommation sont des strings, au besoin ajoutez des zéros à gauche pour avoir deux caractères
     df_energie['code_departement'] = df_energie['code_departement'].astype(str).str.zfill(2)
 
