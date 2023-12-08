@@ -198,8 +198,25 @@ def region_cons2(df_energie):
     plt.tight_layout()
 
     # Show the heatmap
-    st.plt.show()
+    st.pyplot(plt)
 
+def thermo(df_energie):
+    # Regroupement des données par région et calcul de la thermosensibilité moyenne
+    average_thermosensitivity_by_region = df_energie.groupby('libelle_region')['thermor'].mean()
+
+    # Trier les données par ordre décroissant pour une meilleure visualisation
+    average_thermosensitivity_by_region_sorted = average_thermosensitivity_by_region.sort_values(ascending=False)
+
+    # Création d'un diagramme à barres pour visualiser la thermosensibilité moyenne par région
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x=average_thermosensitivity_by_region_sorted.values, y=average_thermosensitivity_by_region_sorted.index)
+    plt.title('Moyenne de la Thermosensibilité par Région')
+    plt.xlabel('Thermosensibilité Moyenne (MWh/degré-jour)')
+    plt.ylabel('Région')
+    plt.tight_layout()
+
+    # Affichage
+    st.pyplot(plt)
 
 
 # Streamlit application layout
@@ -216,6 +233,7 @@ def main():
         st.header("Région")
         region_cons(df_energie)
         region_cons2(df_energie)
+        thermo(df_energie)
     elif choice == "Communes":
         st.header("Communes")
         communes_page()
