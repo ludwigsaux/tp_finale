@@ -46,7 +46,7 @@ fig_departements = px.choropleth_mapbox(merged_departement_data,
                                         labels={'consototale': 'Consommation Totale (MWh)', 'code_departement': 'Département'},
                                         color_continuous_scale='Blues')
 
-fig_departements.update_layout(height=850)
+fig_departements.update_layout(height=850, width=500)
 
 # Affichage du graphique dans Streamlit
 st.plotly_chart(fig_departements)
