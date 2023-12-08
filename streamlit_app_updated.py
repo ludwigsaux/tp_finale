@@ -34,7 +34,7 @@ df_energie = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=T
 df_departement = pd.read_csv(url_data_departement, sep=';')
 departements_geo_data = gpd.read_file(url_departement)
 
-filosofi = download_file("FILOSOFI_COM_2016")
+filosofi = pd.read_csv('filosofi-2016.csv')
 
 # Function placeholders for each page (replace these with actual functions from your script)
 def departement_page():
