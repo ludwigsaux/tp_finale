@@ -162,6 +162,44 @@ def tendances(df_energie):
 
     st.plotly_chart(fig)
 
+def region_cons(df_energie):
+    # Préparation des données pour le graphique
+    regional_consumption = df_energie.groupby(['libelle_region', 'filiere']).agg({'consototale': 'sum'}).reset_index()
+
+    # Création du graphique
+    fig = px.bar(regional_consumption, x='libelle_region', y='consototale', color='filiere',
+                 title='Consommation d\'Énergie par Région et Filière',
+                 labels={'consototale': 'Consommation Totale (MWh)', 'libelle_region': 'Région', 'filiere': 'Filière'})
+
+    # Trier les barres par ordre croissant en fonction de la consommation totale
+    fig.update_xaxes(categoryorder='total descending')
+
+    st.plotly_chart(fig)
+
+def region_cons2(df_energie):
+    # Preparing the data for the heatmap
+    # Grouping the data by region and filiere (energy sector), and summing the total consumption
+    heatmap_data = df_energie.groupby(['libelle_region', 'filiere'])['consototale'].sum().unstack()
+
+    # Calculate the total consumption for each region and add it as a new row
+    heatmap_data['Total'] = heatmap_data.sum(axis=1)
+
+    # Sort the regions by total consumption in descending order
+    heatmap_data = heatmap_data.sort_values(by='Total', ascending=False)
+
+    # Creating the heatmap
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(heatmap_data, annot=True, fmt=".0f", cmap='Blues')
+    plt.title('Consommation Totale d\'Énergie par Région et par Filière')
+    plt.ylabel('Région')
+    plt.xlabel('Filière')
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+
+    # Show the heatmap
+    st.plt.show()
+
 
 
 # Streamlit application layout
@@ -176,7 +214,7 @@ def main():
         visualiser_consommation_departement_habitant(df_energie, departements_geo_data)
     elif choice == "Région":
         st.header("Région")
-        region_page()
+        region_cons(df_energie)
     elif choice == "Communes":
         st.header("Communes")
         communes_page()
