@@ -4,12 +4,14 @@ import pandas as pd
 import plotly.express as px
 import json
 
+url_energie = 'https://opendata.agenceore.fr/explore/dataset/conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-commune/download?format=csv&timezone=Europe/Berlin&use_labels_for_header=false'
+
 # Titre de l'application
 st.title('Consommation d\'Énergie par Département en France')
 
 # Chargement des données de consommation d'énergie
 # Remarque : Assurez-vous que le fichier est disponible dans l'environnement de Streamlit
-data = pd.read_csv('conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-commune.csv', sep=';')
+data = pd.read_csv(url_energie, sep=';')
 
 # Assurez-vous que les codes de département dans les données de consommation sont des strings
 data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
