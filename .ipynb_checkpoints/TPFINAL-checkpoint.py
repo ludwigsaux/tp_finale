@@ -21,6 +21,7 @@ data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 if st.button("Accueil"):
     # Titre de l'application
     st.title('BIenvenue sur le TP final de Ludwig SAUX')
+    
 
 # Page Région
 if st.button("Région"):
@@ -65,9 +66,62 @@ if st.button("Département"):
 
     fig_departements.update_layout(height=850, width=1000)
     
+    
+    
+    
+    # Chargement des données de consommation d'énergie
+    df_energie['code_departement'] = df_energie['code_departement'].astype(str).str.zfill(2)
+
+    # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
+    departements_geo_data = departements_geo_data.to_crs(epsg=4326)
+
+    # Préparation des données de consommation d'énergie par département
+    data_departement = df_energie.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
+    data_departement['nb_habitant'] = df_departement['PTOT']
+
+    # Fusion des données GeoPandas avec les données de consommation
+    merged_departement_data = departements_geo_data.merge(data_departement, left_on='code', right_on='code_departement')
+    merged_departement_data['consommation_habitant'] = merged_departement_data['consototale']/merged_departement_data['nb_habitant']
+
+    # Convertir le GeoDataFrame fusionné en GeoJSON pour l'utiliser dans Plotly
+    geojson = json.loads(merged_departement_data.to_json())
+
+    # La partie importante ici est d'assurer que l'argument 'featureidkey' est correctement défini pour correspondre aux propriétés de l'objet GeoJSON
+    fig_departements = px.choropleth_mapbox(merged_departement_data, 
+                                            geojson=geojson, 
+                                            locations='code_departement',  # Assurez-vous que c'est la colonne du code département
+                                            color='consommation_habitant',
+                                            featureidkey="properties.code",  # Ceci doit correspondre à la clé du GeoJSON
+                                            mapbox_style="carto-positron",
+                                            zoom=5, 
+                                            center={"lat": 46.2276, "lon": 2.2137},
+                                            title='Consommation d\'Énergie par Habitant par  Département en France',
+                                            labels={'consototale': 'Consommation Totale (MWh)', 'code_departement': 'Département'},
+                                            color_continuous_scale='Blues')
+
+    fig_departements.update_layout(height=850, width=1000)
     st.plotly_chart(fig_departements)
+
 
 # Page Ville
 if st.button("Ville"):
-    st.title('Consommation d\'Énergie par Ville en France')
-    # Ajoutez ici votre code pour afficher la carte par ville
+    # Sélectionner uniquement les 10 communes avec la consommation la plus élevée
+
+    # Grouper les données par commune et calculer la consommation totale
+    grouped_df_energie = df_energie.groupby('libelle_commune')['consototale'].sum().reset_index()
+
+    # Sélectionner les 10 communes avec la consommation la plus élevée
+    top_10_consumption_communes = grouped_df_energie.nlargest(8, 'consototale')
+
+    # Étiqueter les communes comme 'High'
+    top_10_consumption_communes['Type'] = 'High'
+
+    # Créer un graphique en barres pour les communes avec les hautes consommations
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x='consototale', y='libelle_commune', data=top_10_consumption_communes, color='red')
+    plt.title('Top 10 Communes par Consommation')
+    plt.xlabel('Consommation Totale (MWh)')
+    plt.ylabel('Commune')
+
+    # Afficher le graphique
+    st.plt.show()
