@@ -1,8 +1,7 @@
-import geopandas as gpd
-import json
-import matplotlib
-import numpy as np
-import pandas as pd
-import plotly
+geopandas
+json
+numpy
+pandas
+plotly
 streamlit
 streamlit==1.12.0
