@@ -149,6 +149,19 @@ def conso_secteur(df_energie):
     # Affichez le graphique
     st.plotly_chart(fig)
 
+def tendances(df_energie):
+    # Préparation des données pour le graphique
+    annual_consumption = df_energie.groupby(['annee', 'filiere']).agg({'consototale': 'sum'}).reset_index()
+
+    # Création du graphique
+    fig = px.line(annual_consumption, x='annee', y='consototale', color='filiere',
+                  title='Tendances Annuelles de la Consommation d\'Énergie par Filière',
+                  labels={'consototale': 'Consommation Totale (MWh)', 'annee': 'Année', 'filiere': 'Filière'})
+
+    fig.update_layout(yaxis=dict(range=[0, annual_consumption['consototale'].max()])) 
+
+    st.plotly_chart(fig)
+
 
 
 # Streamlit application layout
@@ -172,7 +185,7 @@ def main():
         conso_secteur(df_energie)
     elif choice == "Tendances":
         st.header("Tendances")
-        tendances_page()
+        tendances(df_energie)
     elif choice == "Filosofi":
         st.header("Filosofi")
         filosofi_page()
