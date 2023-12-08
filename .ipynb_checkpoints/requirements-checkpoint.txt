@@ -1,5 +1,4 @@
 geopandas
-json
 numpy
 pandas
 plotly
