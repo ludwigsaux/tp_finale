@@ -10,6 +10,8 @@ import os
 
 url_energie = 'https://opendata.agenceore.fr/explore/dataset/conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-commune/download?format=csv&timezone=Europe/Berlin&use_labels_for_header=false'
 
+df_departement = pd.read_csv('donnees_departements.csv', sep=';')
+
 # Chemin vers le répertoire des fichiers CSV temporaires
 temp_csv_dir = 'temp_csv_parts'
 
