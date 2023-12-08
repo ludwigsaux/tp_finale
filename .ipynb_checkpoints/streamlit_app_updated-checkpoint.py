@@ -120,6 +120,35 @@ def visualiser_consommation_departement_habitant(df_energie, departements_geo_da
 
     fig_departements.update_layout(height=850, width=1000)
     st.plotly_chart(fig_departements)
+    
+def conso_secteur():
+    # Calcul de la consommation totale par secteur et par année
+    sector_consumption_yearly = df_energie.groupby(['annee']).agg({
+        'consoa': 'sum',
+        'consoi': 'sum',
+        'consot': 'sum',
+        'consor': 'sum',
+        'consona': 'sum'
+    }).reset_index()
+
+    # Préparation des données pour Plotly
+    sector_consumption_plotly = sector_consumption_yearly.melt(id_vars=['annee'], 
+                                                               value_vars=['consoa', 'consoi', 'consot', 'consor', 'consona'],
+                                                               var_name='Secteur', value_name='Consommation Totale (MWh)')
+
+    # Remplacer les noms des colonnes par des noms plus lisibles
+    sector_names = {'consoa': 'Agriculture', 'consoi': 'Industrie', 'consot': 'Tertiaire', 'consor': 'Résidentiel', 'consona': 'Secteur Inconnu'}
+    sector_consumption_plotly['Secteur'] = sector_consumption_plotly['Secteur'].map(sector_names)
+
+    # Créez un graphique à barres interactif
+    fig = px.bar(sector_consumption_plotly, x='annee', y='Consommation Totale (MWh)', color='Secteur', 
+                 barmode='group',
+                 title='Consommation d\'Énergie par Secteur et par Année',
+                 labels={'Consommation Totale (MWh)': 'Consommation Totale (MWh)', 'annee': 'Année', 'Secteur': 'Secteur'})
+
+    # Affichez le graphique
+    st.plotly_chart(fig)
+
 
 
 # Streamlit application layout
@@ -140,7 +169,7 @@ def main():
         communes_page()
     elif choice == "Secteur":
         st.header("Secteur")
-        secteur_page()
+        conso_secteur()
     elif choice == "Tendances":
         st.header("Tendances")
         tendances_page()
