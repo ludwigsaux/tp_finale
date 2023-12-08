@@ -1,5 +1,19 @@
 
 import streamlit as st
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import geopandas as gpd
+import plotly.express as px
+import json
+import warnings
+import pynsee
+
+from pynsee.download import download_file
+
+# Ignorer les FutureWarnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Import your functions here (after converting them from the notebook script)
 # from your_converted_script import departement_function, region_function, ...
