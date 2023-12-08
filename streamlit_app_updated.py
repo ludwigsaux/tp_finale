@@ -60,13 +60,13 @@ def visualiser_consommation_departement(df_energie, departements_geo_data):
     df_energie['code_departement'] = df_energie['code_departement'].astype(str).str.zfill(2)
 
     # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
-    departements_geo_data = departements_geo_data.to_crs(epsg=4326)
+    departements_geo_data_mod = departements_geo_data.to_crs(epsg=4326)
 
     # Préparation des données de consommation d'énergie par département
     data_departement = df_energie.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
 
     # Fusion des données GeoPandas avec les données de consommation
-    merged_departement_data = departements_geo_data.merge(data_departement, left_on='code', right_on='code_departement')
+    merged_departement_data = departements_geo_data_mod.merge(data_departement, left_on='code', right_on='code_departement')
 
     # Convertir le GeoDataFrame fusionné en GeoJSON pour l'utiliser dans Plotly
     geojson = json.loads(merged_departement_data.to_json())
