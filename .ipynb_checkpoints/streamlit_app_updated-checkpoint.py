@@ -218,6 +218,25 @@ def thermo(df_energie):
     # Affichage
     st.pyplot(plt)
 
+def top10(df_energie):
+    # Grouper les données par commune et calculer la consommation totale
+    grouped_df_energie = df_energie.groupby('libelle_commune')['consototale'].sum().reset_index()
+
+    # Sélection des 10 communes avec la consommation la plus élevée
+    top_10_consumption_communes = grouped_df_energie.nlargest(8, 'consototale')
+
+    # Étiquetage les communes comme 'High'
+    top_10_consumption_communes['Type'] = 'High'
+
+    # Graphique en barres pour les communes avec les hautes consommations
+    plt.figure(figsize=(12, 8))
+    sns.barplot(x='consototale', y='libelle_commune', data=top_10_consumption_communes, color='red')
+    plt.title('Top 10 Communes par Consommation')
+    plt.xlabel('Consommation Totale (MWh)')
+    plt.ylabel('Commune')
+
+    # Afficher le graphique
+    st.pyplot(plt)
 
 # Streamlit application layout
 def main():
@@ -236,7 +255,7 @@ def main():
         thermo(df_energie)
     elif choice == "Communes":
         st.header("Communes")
-        communes_page()
+        top10(df_energie)
     elif choice == "Secteur":
         st.header("Secteur")
         conso_secteur(df_energie)
