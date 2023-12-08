@@ -5,3 +5,4 @@ plotly
 streamlit
 streamlit==1.12.0
 matplotlib
+seaborn
