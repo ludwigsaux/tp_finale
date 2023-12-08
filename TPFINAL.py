@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 import geopandas as gpd
 import pandas as pd
 import plotly.express as px
@@ -6,12 +7,19 @@ import json
 
 url_energie = 'https://opendata.agenceore.fr/explore/dataset/conso-elec-gaz-annuelle-par-secteur-dactivite-agregee-commune/download?format=csv&timezone=Europe/Berlin&use_labels_for_header=false'
 
+# Chemin vers le répertoire des fichiers CSV temporaires
+temp_csv_dir = 'temp_csv_parts'
+
+# Liste des noms de fichiers CSV temporaires
+csv_files = [os.path.join(temp_csv_dir, f) for f in os.listdir(temp_csv_dir) if f.endswith('.csv')]
+
+# Reconstituez le DataFrame en concaténant les fichiers CSV temporaires
+data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
+
+# Utilisez df_reconstituted dans votre application Streamlit
+
 # Titre de l'application
 st.title('Consommation d\'Énergie par Département en France')
-
-# Chargement des données de consommation d'énergie
-# Remarque : Assurez-vous que le fichier est disponible dans l'environnement de Streamlit
-data = pd.read_csv(url_energie, sep=';')
 
 # Assurez-vous que les codes de département dans les données de consommation sont des strings
 data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
