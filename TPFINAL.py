@@ -17,10 +17,10 @@ csv_files = [os.path.join(temp_csv_dir, f) for f in os.listdir(temp_csv_dir) if 
 # Reconstituez le DataFrame en concaténant les fichiers CSV temporaires
 data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 
-
-
 # Page d'accueil
 if st.button("Accueil"):
+    # Titre de l'application
+    st.title('Consommation d\'Énergie par Département en France')
 
 # Page Région
 if st.button("Région"):
