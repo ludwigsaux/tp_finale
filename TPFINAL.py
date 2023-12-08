@@ -22,7 +22,7 @@ data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 # Page d'accueil
 if st.button("Accueil"):
     # Titre de l'application
-    st.title('BIenvenue sur le TP final de Ludwig SAUX')
+    st.title('Bienvenue sur le TP final de Ludwig SAUX')
     
 
 # Page Région
@@ -54,7 +54,7 @@ if st.button("Département"):
     # Convertir le GeoDataFrame fusionné en GeoJSON pour l'utiliser dans Plotly
     geojson = json.loads(merged_departement_data.to_json())
 
-    # Création du graphique
+    # Création du premier graphique (Carte choroplèthe)
     fig_departements = px.choropleth_mapbox(merged_departement_data, 
                                             geojson=geojson, 
                                             locations='code_departement',
@@ -66,44 +66,21 @@ if st.button("Département"):
                                             labels={'consototale': 'Consommation Totale (MWh)', 'code_departement': 'Département'},
                                             color_continuous_scale='Blues')
 
-    fig_departements.update_layout(height=850, width=1000)
+    fig_departements.update_layout(height=450, width=600)
     
-    
-    
-    
-    # Chargement des données de consommation d'énergie
-    data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
+    # Création du deuxième graphique (Histogramme)
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data_departement['consototale'], bins=20, kde=True, color='blue')
+    plt.title('Distribution de la Consommation Totale par Département')
+    plt.xlabel('Consommation Totale (MWh)')
+    plt.ylabel('Fréquence')
 
-    # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
-    departements_geo_data = departements_geo_data.to_crs(epsg=4326)
-
-    # Préparation des données de consommation d'énergie par département
-    data_departement = data.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
-    data_departement['nb_habitant'] = df_departement['PTOT']
-
-    # Fusion des données GeoPandas avec les données de consommation
-    merged_departement_data = departements_geo_data.merge(data_departement, left_on='code', right_on='code_departement')
-    merged_departement_data['consommation_habitant'] = merged_departement_data['consototale']/merged_departement_data['nb_habitant']
-
-    # Convertir le GeoDataFrame fusionné en GeoJSON pour l'utiliser dans Plotly
-    geojson = json.loads(merged_departement_data.to_json())
-
-    # La partie importante ici est d'assurer que l'argument 'featureidkey' est correctement défini pour correspondre aux propriétés de l'objet GeoJSON
-    fig_departements = px.choropleth_mapbox(merged_departement_data, 
-                                            geojson=geojson, 
-                                            locations='code_departement',  # Assurez-vous que c'est la colonne du code département
-                                            color='consommation_habitant',
-                                            featureidkey="properties.code",  # Ceci doit correspondre à la clé du GeoJSON
-                                            mapbox_style="carto-positron",
-                                            zoom=5, 
-                                            center={"lat": 46.2276, "lon": 2.2137},
-                                            title='Consommation d\'Énergie par Habitant par  Département en France',
-                                            labels={'consototale': 'Consommation Totale (MWh)', 'code_departement': 'Département'},
-                                            color_continuous_scale='Blues')
-
-    fig_departements.update_layout(height=850, width=1000)
-    st.plotly_chart(fig_departements)
-
+    # Afficher les deux graphiques avec Streamlit
+    col1, col2 = st.beta_columns(2)
+    with col1:
+        st.plotly_chart(fig_departements)
+    with col2:
+        st.pyplot()
 
 # Page Ville
 if st.button("Ville"):
@@ -125,5 +102,5 @@ if st.button("Ville"):
     plt.xlabel('Consommation Totale (MWh)')
     plt.ylabel('Commune')
 
-    # Afficher le graphique
-    st.plt.show()
+    # Afficher le graphique avec Streamlit
+    st.pyplot()
