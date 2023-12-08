@@ -17,9 +17,18 @@ csv_files = [os.path.join(temp_csv_dir, f) for f in os.listdir(temp_csv_dir) if 
 # Reconstituez le DataFrame en concaténant les fichiers CSV temporaires
 data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 
+
+
 # Page d'accueil
 if st.button("Accueil"):
-    # Titre de l'application
+
+# Page Région
+if st.button("Région"):
+    st.title('Consommation d\'Énergie par Région en France')
+    # Ajoutez ici votre code pour afficher la carte par région
+
+# Page Département
+if st.button("Département"):
     st.title('Consommation d\'Énergie par Département en France')
 
     # Assurez-vous que les codes de département dans les données de consommation sont des strings
@@ -55,15 +64,7 @@ if st.button("Accueil"):
                                             color_continuous_scale='Blues')
 
     fig_departements.update_layout(height=850, width=1000)
-
-# Page Région
-if st.button("Région"):
-    st.title('Consommation d\'Énergie par Région en France')
-    # Ajoutez ici votre code pour afficher la carte par région
-
-# Page Département
-if st.button("Département"):
-    st.title('Consommation d\'Énergie par Département en France')
+    
     st.plotly_chart(fig_departements)
 
 # Page Ville
