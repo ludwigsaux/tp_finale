@@ -95,7 +95,7 @@ def main():
 
     if choice == "Département":
         st.header("Département")
-        visualiser_consommation_departement()
+        visualiser_consommation_departement(df_energie, departements_geo_data)
     elif choice == "Région":
         st.header("Région")
         region_page()
