@@ -17,8 +17,6 @@ csv_files = [os.path.join(temp_csv_dir, f) for f in os.listdir(temp_csv_dir) if 
 # Reconstituez le DataFrame en concaténant les fichiers CSV temporaires
 data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 
-# Utilisez df_reconstituted dans votre application Streamlit
-
 # Titre de l'application
 st.title('Consommation d\'Énergie par Département en France')
 
@@ -55,9 +53,6 @@ fig_departements = px.choropleth_mapbox(merged_departement_data,
                                         color_continuous_scale='Blues')
 
 fig_departements.update_layout(height=850, width=1000)
-
-# Affichage du graphique dans Streamlit
-st.plotly_chart(fig_departements)
 
 # Page d'accueil
 if st.button("Accueil"):
