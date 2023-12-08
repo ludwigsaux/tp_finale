@@ -20,7 +20,7 @@ data = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=True)
 # Page d'accueil
 if st.button("Accueil"):
     # Titre de l'application
-    st.title('Consommation d\'Énergie par Département en France')
+    st.title('BIenvenue sur le TP final de Ludwig SAUX')
 
 # Page Région
 if st.button("Région"):
