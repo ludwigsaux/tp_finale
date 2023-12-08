@@ -121,7 +121,7 @@ def visualiser_consommation_departement_habitant(df_energie, departements_geo_da
     fig_departements.update_layout(height=850, width=1000)
     st.plotly_chart(fig_departements)
     
-def conso_secteur():
+def conso_secteur(df_energie):
     # Calcul de la consommation totale par secteur et par année
     sector_consumption_yearly = df_energie.groupby(['annee']).agg({
         'consoa': 'sum',
@@ -169,7 +169,7 @@ def main():
         communes_page()
     elif choice == "Secteur":
         st.header("Secteur")
-        conso_secteur()
+        conso_secteur(df_energie)
     elif choice == "Tendances":
         st.header("Tendances")
         tendances_page()
