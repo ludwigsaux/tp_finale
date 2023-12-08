@@ -215,6 +215,7 @@ def main():
     elif choice == "Région":
         st.header("Région")
         region_cons(df_energie)
+        region_cons2(df_energie)
     elif choice == "Communes":
         st.header("Communes")
         communes_page()
