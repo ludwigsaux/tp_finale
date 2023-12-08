@@ -72,13 +72,13 @@ if st.button("Département"):
     st.plotly_chart(fig_departements)
 
     # Chargement des données de consommation d'énergie
-    df_energie['code_departement'] = df_energie['code_departement'].astype(str).str.zfill(2)
+    data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
 
     # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
     departements_geo_data = departements_geo_data.to_crs(epsg=4326)
 
     # Préparation des données de consommation d'énergie par département
-    data_departement = df_energie.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
+    data_departement = data.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
     data_departement['nb_habitant'] = df_departement['PTOT']
 
     # Fusion des données GeoPandas avec les données de consommation
