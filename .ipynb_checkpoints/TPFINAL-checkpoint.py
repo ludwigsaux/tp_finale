@@ -70,13 +70,13 @@ if st.button("Département"):
     
     
     # Chargement des données de consommation d'énergie
-    df_energie['code_departement'] = df_energie['code_departement'].astype(str).str.zfill(2)
+    data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
 
     # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
     departements_geo_data = departements_geo_data.to_crs(epsg=4326)
 
     # Préparation des données de consommation d'énergie par département
-    data_departement = df_energie.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
+    data_departement = data.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
     data_departement['nb_habitant'] = df_departement['PTOT']
 
     # Fusion des données GeoPandas avec les données de consommation
@@ -108,7 +108,7 @@ if st.button("Ville"):
     # Sélectionner uniquement les 10 communes avec la consommation la plus élevée
 
     # Grouper les données par commune et calculer la consommation totale
-    grouped_df_energie = df_energie.groupby('libelle_commune')['consototale'].sum().reset_index()
+    grouped_df_energie = data.groupby('libelle_commune')['consototale'].sum().reset_index()
 
     # Sélectionner les 10 communes avec la consommation la plus élevée
     top_10_consumption_communes = grouped_df_energie.nlargest(8, 'consototale')
