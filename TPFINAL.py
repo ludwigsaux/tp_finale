@@ -68,19 +68,41 @@ if st.button("Département"):
 
     fig_departements.update_layout(height=450, width=600)
     
-    # Création du deuxième graphique (Histogramme)
-    plt.figure(figsize=(10, 6))
-    sns.histplot(data_departement['consototale'], bins=20, kde=True, color='blue')
-    plt.title('Distribution de la Consommation Totale par Département')
-    plt.xlabel('Consommation Totale (MWh)')
-    plt.ylabel('Fréquence')
+    # Afficher le premier graphique avec Streamlit
+    st.plotly_chart(fig_departements)
 
-    # Afficher les deux graphiques avec Streamlit
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        st.plotly_chart(fig_departements)
-    with col2:
-        st.pyplot()
+    # Les données de consommation sont des strings, au besoin ajoutez des zéros à gauche pour avoir deux caractères
+    data['code_departement'] = data['code_departement'].astype(str).str.zfill(2)
+
+    # Convertir les données GeoPandas en projection EPSG:4326 si nécessaire
+    departements_geo_data = departements_geo_data.to_crs(epsg=4326)
+
+    # Préparation des données de consommation d'énergie par département
+    data_departement = data.groupby('code_departement').agg({'consototale': 'sum'}).reset_index()
+
+    # Fusion des données GeoPandas avec les données de consommation
+    merged_departement_data = departements_geo_data.merge(data_departement, left_on='code', right_on='code_departement')
+
+    # Convertir le GeoDataFrame fusionné en GeoJSON pour l'utiliser dans Plotly
+    geojson = json.loads(merged_departement_data.to_json())
+
+    # Création du deuxième graphique (Carte choroplèthe)
+    fig_departements_habitant = px.choropleth_mapbox(merged_departement_data, 
+                                                    geojson=geojson, 
+                                                    locations='code_departement',
+                                                    color='consommation_habitant',
+                                                    featureidkey="properties.code",
+                                                    mapbox_style="carto-positron",
+                                                    zoom=5, 
+                                                    center={"lat": 46.2276, "lon": 2.2137},
+                                                    title='Consommation d\'Énergie par Habitant par  Département en France',
+                                                    labels={'consommation_habitant': 'Consommation par Habitant (MWh/habitant)', 'code_departement': 'Département'},
+                                                    color_continuous_scale='Blues')
+
+    fig_departements_habitant.update_layout(height=450, width=600)
+    
+    # Afficher le deuxième graphique avec Streamlit
+    st.plotly_chart(fig_departements_habitant)
 
 # Page Ville
 if st.button("Ville"):
